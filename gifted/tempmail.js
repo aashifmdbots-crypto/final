@@ -4,7 +4,7 @@ const { sendButtons } = require("gifted-btns");
 const { getContextInfo } = require("../gift/contextInfo");
 const { getLidMapping } = require("../gift/connection/groupCache");
 const {
-    initTempMailDB,
+    startTempMailCleanup,
     setUserEmail,
     getUserEmail,
     getUserEmailWithExpiry,
@@ -12,7 +12,7 @@ const {
     EXPIRY_MINUTES,
 } = require("../gift/database/tempmail");
 
-initTempMailDB();
+startTempMailCleanup();
 
 function getUserName(jid) {
     return jid.split("@")[0];

@@ -632,6 +632,50 @@ function setupStatusHandlers(Gifted) {
 
 const processedMessages = new Set();
 const BOT_START_TIME = Date.now();
+const CACHE_CLEANUP_TTL_MS = Number(process.env.CACHE_CLEANUP_TTL_MS || 2 * 60 * 1000);
+const CACHE_TEMP_PREFIXES = [
+    "temp_",
+    "temp-media",
+    "temp_media",
+    "temp-photo",
+    "temp_photo",
+    "temp-img",
+    "temp_img",
+    "temp-enhance",
+    "temp_enhance",
+    "temp-qr",
+    "temp_qr",
+];
+
+async function cleanupCommandCache() {
+    const now = Date.now();
+    const targets = [
+        path.join(__dirname, "gift", "temp"),
+        __dirname,
+    ];
+
+    for (const dir of targets) {
+        try {
+            const entries = await fs.promises.readdir(dir, {
+                withFileTypes: true,
+            });
+            for (const entry of entries) {
+                if (!entry.isFile()) continue;
+                const lowerName = entry.name.toLowerCase();
+                const shouldCheckByName = CACHE_TEMP_PREFIXES.some((prefix) =>
+                    lowerName.startsWith(prefix),
+                );
+                if (!shouldCheckByName && dir !== path.join(__dirname, "gift", "temp")) {
+                    continue;
+                }
+                const filePath = path.join(dir, entry.name);
+                const stats = await fs.promises.stat(filePath);
+                if (now - stats.mtimeMs < CACHE_CLEANUP_TTL_MS) continue;
+                await fs.promises.unlink(filePath).catch(() => {});
+            }
+        } catch (_) {}
+    }
+}
 
 function setupCommandHandler(Gifted) {
     Gifted.ev.on("messages.upsert", async ({ messages, type }) => {
@@ -763,6 +807,8 @@ function setupCommandHandler(Gifted) {
                 await bodyCmd.function(from, Gifted, conText);
             } catch (error) {
                 console.error(`Body command error:`, error);
+            } finally {
+                await cleanupCommandCache();
             }
         }
 
@@ -839,6 +885,8 @@ function setupCommandHandler(Gifted) {
                 } catch (sendErr) {
                     console.error("Error sending error message:", sendErr);
                 }
+            } finally {
+                await cleanupCommandCache();
             }
         }
     });
