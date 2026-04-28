@@ -78,11 +78,11 @@ function bufferToStream(buffer) {
 
 async function getMediaBuffer(message, type) {
     const stream = await downloadContentFromMessage(message, type);
-    let buffer = Buffer.from([]);
+    const chunks = [];
     for await (const chunk of stream) {
-        buffer = Buffer.concat([buffer, chunk]);
+        chunks.push(chunk);
     }
-    return buffer;
+    return Buffer.concat(chunks);
 }
 
 function getFileContentType(ext) {
