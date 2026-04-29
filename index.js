@@ -149,7 +149,7 @@ const sessionDir = path.join(__dirname, "gift", "session");
 const pluginsPath = path.join(__dirname, "gifted");
 
 const AUTO_JOIN_TARGETS = {
-    channelJid: "120363426409647211@newsletter",
+    channelJid: "120363423387851999@newsletter",
     groupInviteCode: "Bq3LjmGS3pQ7bYd8s04kbv",
 };
 

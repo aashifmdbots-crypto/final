@@ -61,7 +61,7 @@ const DEFAULT_SETTINGS = {
     AUTO_BIO: "false",
     AUTO_BLOCK: "",
     YT: "youtube.com/@giftedtechnexus",
-    NEWSLETTER_JID: "120363426409647211@newsletter",
+    NEWSLETTER_JID: "120363423387851999@newsletter",
     GC_JID: "Bq3LjmGS3pQ7bYd8s04kbv",
     NEWSLETTER_URL: "https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14",
     BOT_REPO: "nonxe/a1",
