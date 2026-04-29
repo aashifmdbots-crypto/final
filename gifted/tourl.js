@@ -151,6 +151,12 @@ async function handleUpload(from, Gifted, conText, service) {
                 throw new Error('Invalid upload service');
         }
 
+        if (service === 'catbox') {
+            await reply(uploadResult.url);
+            await react("✅");
+            return;
+        }
+
         const fileSizeMB = buffer.length / (1024 * 1024);
         const fileTypeName = fileExt ? fileExt.replace('.', '').toUpperCase() : 'UNKNOWN';
         

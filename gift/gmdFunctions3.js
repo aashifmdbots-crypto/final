@@ -201,20 +201,24 @@ async function uploadToGiftedCdn(buffer, filename, deleteKey = '') {
 async function uploadToCatbox(buffer, filename) {
     const form = new FormData();
     const stream = bufferToStream(buffer);
-    form.append('reqtype', 'fileupload');
-    form.append('userhash', 'ae78e7174c674f133a271261b');
-    form.append('fileToUpload', stream, {
+
+    form.append('file', stream, {
         filename: filename,
         contentType: getFileContentType(path.extname(filename))
     });
 
-    const { data } = await axios.post('https://catbox.moe/user/api.php', form, {
+    const { data } = await axios.post('https://apis.davidcyril.name.ng/uploader/catbox', form, {
         headers: form.getHeaders(),
         maxContentLength: Infinity,
         maxBodyLength: Infinity
     });
 
-    return { url: data.trim() };
+    const uploadedUrl = data?.url;
+    if (!uploadedUrl) {
+        throw new Error('Catbox upload succeeded but no URL was returned.');
+    }
+
+    return { url: uploadedUrl };
 }
 
 
