@@ -223,41 +223,22 @@ async function startGifted() {
                 await initializeLidStore(Gifted);
 
                 setTimeout(async () => {
-                    try {
-                        const totalCommands = commands.filter(
-                            (c) => c.pattern && !c.dontAddCommandList,
-                        ).length;
-                        console.log("💜 Connected to Whatsapp, Active!");
+                    try {                        console.log("💜 Connected to Whatsapp, Active!");
 
                         if (s.STARTING_MESSAGE === "true") {
-                            const d = DEFAULT_SETTINGS;
-                            const md =
-                                s.MODE === "public" ? "public" : "private";
-                            const connectionMsg = `
-*${s.BOT_NAME || d.BOT_NAME} 𝐂𝐎𝐍𝐍𝐄𝐂𝐓𝐄𝐃*
+                            const connectionMsg = `𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗 CONNECTED-♥️
+Updates: https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14
 
-𝐏𝐫𝐞𝐟𝐢𝐱       : *[ ${s.PREFIX || d.PREFIX} ]*
-𝐏𝐥𝐮𝐠𝐢𝐧𝐬      : *${totalCommands}*
-𝐌𝐨𝐝𝐞        : *${md}*
-𝐎𝐰𝐧𝐞𝐫       : *${s.OWNER_NUMBER || d.OWNER_NUMBER}*
-𝐓𝐮𝐭𝐨𝐫𝐢𝐚𝐥𝐬     : *${s.YT || d.YT}*
-𝐔𝐩𝐝𝐚𝐭𝐞𝐬      : *${s.NEWSLETTER_URL || d.NEWSLETTER_URL}*
+Prefix:
+Plugins: 
 
-𝐍𝐨𝐭𝐞:  Bot may take some few seconds/minutes to sync before being ready to use.
-
-> *${s.CAPTION || d.CAPTION}*`;
+𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗 𝐁𝐘 𝐀𝐀𝐒𝐇𝐈𝐅 𝐒𝐄𝐑 ♥️
+╰─━─ • 🌙 • ─━─╯`;
 
                             await Gifted.sendMessage(
                                 Gifted.user.id,
                                 {
                                     text: connectionMsg,
-                                    ...(await createContext(
-                                        s.BOT_NAME || d.BOT_NAME,
-                                        {
-                                            title: "BOT INTEGRATED",
-                                            body: "Status: Ready for Use",
-                                        },
-                                    )),
                                 },
                                 {
                                     disappearingMessagesInChat: true,
