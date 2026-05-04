@@ -1,4 +1,6 @@
 const { gmd, toAudio, toVideo, toPtt, stickerToImage, gmdFancy, gmdRandom, getSetting, runFFmpeg, getVideoDuration, gmdSticker } = require("../gift");
+const AdmZip = require("adm-zip");
+const path = require("path");
 const fs = require("fs").promises;
 const { StickerTypes } = require("wa-sticker-formatter");
 
@@ -107,7 +109,7 @@ gmd({
     react: "🔄️",
     description: "Change replied sticker pack and author metadata.",
 }, async (from, Gifted, conText) => {
-    const { mek, reply, react, quoted } = conText;
+    const { mek, reply, react, quoted, q } = conText;
 
     const quotedSticker = quoted?.stickerMessage || quoted?.message?.stickerMessage;
     if (!quotedSticker) {
@@ -123,9 +125,11 @@ gmd({
         stickerFilePath = gmdRandom(".webp");
         await fs.writeFile(stickerFilePath, stickerData);
 
+        const [customPack, customAuthor] = (q || "").split("|").map((v) => v.trim());
+
         const updatedStickerBuffer = await gmdSticker(stickerFilePath, {
-            pack: "𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗",
-            author: "𝐁𝐘 𝐀𝐀𝐒𝐇𝐈𝐅 𝐒𝐄𝐑 ♥️",
+            pack: customPack || "𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗",
+            author: customAuthor || "𝐁𝐘 𝐀𝐀𝐒𝐇𝐈𝐅 𝐒𝐄𝐑 ♥️",
             type: StickerTypes.FULL,
             categories: ["🤩", "🎉"],
             id: "12345",
@@ -353,3 +357,50 @@ gmd({
 );
 
 
+
+
+gmd({
+    pattern: "extract",
+    aliases: ["unzip"],
+    category: "converter",
+    react: "📦",
+    description: "Extract a replied ZIP file",
+}, async (from, Gifted, conText) => {
+    const { mek, reply, react, quoted, quotedMsg } = conText;
+
+    const quotedDoc = quoted?.documentMessage || quoted?.message?.documentMessage;
+    const mime = quotedDoc?.mimetype || "";
+
+    if (!quotedMsg || !quotedDoc || !mime.includes("zip")) {
+        await react("❌");
+        return reply("Please reply to a ZIP document.");
+    }
+
+    let zipPath;
+    try {
+        zipPath = await Gifted.downloadAndSaveMediaMessage(quotedDoc, "temp_zip");
+        const zip = new AdmZip(zipPath);
+        const entries = zip.getEntries().filter((e) => !e.isDirectory);
+
+        if (!entries.length) return reply("ZIP file is empty.");
+
+        for (const entry of entries.slice(0, 10)) {
+            const data = entry.getData();
+            await Gifted.sendMessage(from, {
+                document: data,
+                fileName: path.basename(entry.entryName),
+            }, { quoted: mek });
+        }
+
+        if (entries.length > 10) {
+            await reply(`Extracted first 10 files out of ${entries.length}.`);
+        }
+        await react("✅");
+    } catch (e) {
+        console.error("Error in extract command:", e);
+        await react("❌");
+        await reply("Failed to extract ZIP file.");
+    } finally {
+        if (zipPath) await fs.unlink(zipPath).catch(() => {});
+    }
+});
