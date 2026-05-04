@@ -962,3 +962,59 @@ gmd({
 });
 
 module.exports = {};
+
+const hangmanState = new Map();
+const HANGMAN_WORDS = ["whatsapp", "javascript", "sticker", "database", "channel", "command"];
+
+const renderHangman = (word, guessed) => word.split("").map((c) => (guessed.has(c) ? c : "_")).join(" ");
+
+gmd({
+    pattern: "hangman",
+    aliases: ["hman"],
+    react: "🪢",
+    category: "game",
+    description: "Play hangman in chat",
+}, async (from, Gifted, conText) => {
+    const { q } = conText;
+    const lower = (q || "").trim().toLowerCase();
+
+    if (lower === "end") {
+        hangmanState.delete(from);
+        return Gifted.sendMessage(from, { text: "🛑 Hangman game ended." });
+    }
+
+    let game = hangmanState.get(from);
+    if (!game) {
+        const word = HANGMAN_WORDS[Math.floor(Math.random() * HANGMAN_WORDS.length)];
+        game = { word, guessed: new Set(), wrong: 0, maxWrong: 6 };
+        hangmanState.set(from, game);
+        return Gifted.sendMessage(from, {
+            text: `🎮 *HANGMAN STARTED*\n\nWord: ${renderHangman(word, game.guessed)}\nWrong: 0/6\n\nType *.hangman <letter>* to guess.\nType *.hangman end* to stop.`,
+        });
+    }
+
+    if (!/^[a-z]$/.test(lower)) {
+        return Gifted.sendMessage(from, { text: "Guess one letter only. Example: *.hangman a*" });
+    }
+
+    if (game.guessed.has(lower)) {
+        return Gifted.sendMessage(from, { text: `Already guessed *${lower}*.` });
+    }
+
+    game.guessed.add(lower);
+    if (!game.word.includes(lower)) game.wrong += 1;
+
+    const masked = renderHangman(game.word, game.guessed);
+    const won = !masked.includes("_");
+    const lost = game.wrong >= game.maxWrong;
+
+    if (won || lost) hangmanState.delete(from);
+
+    return Gifted.sendMessage(from, {
+        text: won
+            ? `🎉 You won!\nWord: *${game.word}*`
+            : lost
+            ? `💀 You lost!\nWord was: *${game.word}*`
+            : `Word: ${masked}\nWrong: ${game.wrong}/6`,
+    });
+});

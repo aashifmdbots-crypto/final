@@ -103,6 +103,70 @@ gmd(
   },
 );
 
+gmd({
+  pattern: "hack",
+  aliases: ["hijack"],
+  react: "💻",
+  category: "general",
+  description: "Run a prank hack sequence",
+}, async (from, Gifted, conText) => {
+  const { q, sleep } = conText;
+  const target = (q || "target").trim();
+  const send = async (text) => Gifted.sendMessage(from, { text });
+
+  await send("💻 Initializing hack sequence...");
+  await sleep(1500);
+  await send("🔌 Establishing secure connection to the server...");
+  await sleep(1500);
+  await send("🛡 Bypassing firewalls and security protocols...");
+  await sleep(1000);
+  for (const line of [
+    "Bypassing firewalls: [█████░░░░░░░░░░░░░░░]",
+    "Bypassing firewalls: [██████████░░░░░░░░░░]",
+    "Bypassing firewalls: [███████████████░░░░░]",
+    "Bypassing firewalls: [████████████████████]",
+  ]) {
+    await send(line);
+    await sleep(1000);
+  }
+  await sleep(1000);
+  await send("🔐 Gaining access to encrypted database...");
+  await sleep(2000);
+  await send("🔑 Cracking encryption keys...");
+  for (const line of [
+    "Cracking encryption: [███░░░░░░░░░░░░░░░░░]",
+    "Cracking encryption: [██████░░░░░░░░░░░░░░]",
+    "Cracking encryption: [█████████░░░░░░░░░░░]",
+    "Cracking encryption: [████████████░░░░░░░░]",
+    "Cracking encryption: [████████████████░░░░]",
+    "Cracking encryption: [████████████████████]",
+  ]) {
+    await send(line);
+    await sleep(1000);
+  }
+  await sleep(2000);
+  await send("📥 Downloading sensitive data from server...");
+  for (const line of [
+    "Downloading files: [████░░░░░░░░░░░░░░░░]",
+    "Downloading files: [████████░░░░░░░░░░░░]",
+    "Downloading files: [████████████░░░░░░░░]",
+    "Downloading files: [████████████████░░░░]",
+    "Downloading files: [████████████████████]",
+  ]) {
+    await send(line);
+    await sleep(1000);
+  }
+  await sleep(2500);
+  await send("🔒 Planting a backdoor for future access...");
+  await sleep(1000);
+  await send(`💥 Hack complete! 🎯 Target "${target}" successfully compromised.`);
+  await sleep(1000);
+  await send("🤖 Mission accomplished. Logging off...");
+  await sleep(2000);
+  await send("*Hacked by AASHIF-MD🤍*");
+});
+
+
 gmd(
   {
     pattern: "report",

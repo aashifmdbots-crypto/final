@@ -226,19 +226,17 @@ async function startGifted() {
                     try {                        console.log("💜 Connected to Whatsapp, Active!");
 
                         if (s.STARTING_MESSAGE === "true") {
-                            const connectionMsg = `𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗 CONNECTED-♥️
-Updates: https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14
+                            const pingStart = Date.now();
+                            const ping = Date.now() - pingStart;
+                            const connectionMsg = `*AASHIF-MD CONNECTED*
 
-Prefix:
-Plugins: 
-
-𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗 𝐁𝐘 𝐀𝐀𝐒𝐇𝐈𝐅 𝐒𝐄𝐑 ♥️
-╰─━─ • 🌙 • ─━─╯`;
+⚡ Ping: ${ping}ms`;
 
                             await Gifted.sendMessage(
                                 Gifted.user.id,
                                 {
-                                    text: connectionMsg,
+                                    image: { url: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg" },
+                                    caption: connectionMsg,
                                 },
                                 {
                                     disappearingMessagesInChat: true,
