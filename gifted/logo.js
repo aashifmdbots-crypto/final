@@ -293,16 +293,29 @@ async function createLogoCommand(config) {
           return reply("Logo API is not configured. Please set GiftedTechApi and GiftedApiKey.");
         }
 
-        const apiUrl = `${GiftedTechApi}/api/ephoto360/${config.endpoint}?apikey=${GiftedApiKey}&text=${encodeURIComponent(q)}`;
+        const baseApiUrl = GiftedTechApi.replace(/\/$/, "");
+        const apiUrl = `${baseApiUrl}/api/ephoto360/${config.endpoint}?apikey=${GiftedApiKey}&text=${encodeURIComponent(q)}`;
         const res = await axios.get(apiUrl, { timeout: 60000 });
 
-        const imageUrl =
-          res.data?.result?.image_url ||
-          res.data?.result?.image ||
-          res.data?.result?.url ||
-          res.data?.result;
+        const result = res.data?.result;
+        const rawImageUrl =
+          res.data?.image_url ||
+          res.data?.image ||
+          result?.image_url ||
+          result?.image ||
+          result?.url ||
+          result?.download_url ||
+          (Array.isArray(result) ? result[0] : undefined) ||
+          (typeof result === "string" ? result : undefined);
 
-        if (!res.data?.success || typeof imageUrl !== "string" || !imageUrl) {
+        const imageUrl = typeof rawImageUrl === "string"
+          ? rawImageUrl.startsWith("http")
+            ? rawImageUrl
+            : `${baseApiUrl}${rawImageUrl.startsWith("/") ? "" : "/"}${rawImageUrl}`
+          : null;
+
+        const isSuccess = res.data?.success !== false && res.status >= 200 && res.status < 300;
+        if (!isSuccess || !imageUrl) {
           await react("❌");
           return reply("Failed to generate logo. API returned an invalid response.");
         }
