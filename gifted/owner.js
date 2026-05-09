@@ -50,21 +50,23 @@ gmd(
 
     try {
       const ownerCardName = "𝐀𝐀𝐒𝐇𝐈𝐅 𝐒𝐄𝐑 ♥️";
-      const ownerCardNumber = "94768655794";
-      const vcard =
-        "BEGIN:VCARD\n" +
-        "VERSION:3.0\n" +
-        `FN:${ownerCardName}\n` +
-        `ORG:${botName};\n` +
-        `TEL;type=CELL;type=VOICE;waid=${ownerCardNumber}:${ownerCardNumber}\n` +
-        "END:VCARD";
+      const ownerNumbers = ["94768655794", "94751413121"];
+      const contacts = ownerNumbers.map((ownerCardNumber) => ({
+        vcard:
+          "BEGIN:VCARD\n" +
+          "VERSION:3.0\n" +
+          `FN:${ownerCardName}\n` +
+          `ORG:${botName};\n` +
+          `TEL;type=CELL;type=VOICE;waid=${ownerCardNumber}:${ownerCardNumber}\n` +
+          "END:VCARD",
+      }));
 
       await Gifted.sendMessage(
         from,
         {
           contacts: {
             displayName: ownerCardName,
-            contacts: [{ vcard }],
+            contacts,
           },
         },
         { quoted: mek },
