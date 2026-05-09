@@ -1,7 +1,7 @@
 const { gmd, commands, getSetting } = require("../gift");
 const fs = require("fs").promises;
 const fsA = require("node:fs");
-const { S_WHATSAPP_NET } = require("@whiskeysockets/baileys");
+const { S_WHATSAPP_NET } = require("gifted-baileys");
 const { Jimp } = require("jimp");
 const path = require("path");
 const moment = require("moment-timezone");
@@ -954,7 +954,7 @@ gmd(
       mentionedJid,
       superUser,
     } = conText;
-    const { isJidGroup } = require("@whiskeysockets/baileys");
+    const { isJidGroup } = require("gifted-baileys");
     const { convertLidToJid } = require("../gift/connection/serializer");
 
     if (!isSuperUser) return reply("❌ Owner Only Command!");
@@ -1016,7 +1016,7 @@ gmd(
   async (from, Gifted, conText) => {
     const { reply, react, isSuperUser, quotedUser, args, mentionedJid } =
       conText;
-    const { isJidGroup } = require("@whiskeysockets/baileys");
+    const { isJidGroup } = require("gifted-baileys");
     const { convertLidToJid } = require("../gift/connection/serializer");
 
     if (!isSuperUser) return reply("❌ Owner Only Command!");
@@ -1125,7 +1125,7 @@ gmd(
       botPrefix,
     } = conText;
     const { downloadMediaMessage } = require("../gift/connection/serializer");
-    const { isJidGroup } = require("@whiskeysockets/baileys");
+    const { isJidGroup } = require("gifted-baileys");
 
     if (!isSuperUser) return reply("❌ Owner Only Command!");
     if (!quotedMsg) return reply("❌ Please quote a message to forward!");
@@ -1163,7 +1163,7 @@ gmd(
 
       const customCaption = args.slice(1).join(" ") || null;
       const msgType = Object.keys(quotedMsg)[0];
-      const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
+      const { downloadContentFromMessage } = require("gifted-baileys");
 
       if (msgType === "conversation" || msgType === "extendedTextMessage") {
         const text =

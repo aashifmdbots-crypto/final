@@ -1503,7 +1503,7 @@ gmd(
   },
   async (from, Gifted, conText) => {
     const { reply, react, isSuperUser, isGroup, q, quoted, quotedMsg, mek, formatAudio, formatVideo, botPrefix } = conText;
-    const { downloadMediaMessage } = require("@whiskeysockets/baileys");
+    const { downloadMediaMessage } = require("gifted-baileys");
 
     if (!isGroup) return reply("❌ Group only command!");
     if (!isSuperUser) return reply("❌ Owner Only Command!");
