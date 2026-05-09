@@ -3,7 +3,7 @@ const axios = require("axios");
 const {
   generateWAMessageContent,
   generateWAMessageFromContent,
-} = require("gifted-baileys");
+} = require("@whiskeysockets/baileys");
 const { getSetting } = require("../gift/database/settings");
 
 const SPORTS_API_BASE = "https://apiskeith.top";

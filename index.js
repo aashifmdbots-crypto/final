@@ -10,7 +10,7 @@ const {
     downloadContentFromMessage,
     getContentType,
     fetchLatestWaWebVersion,
-} = require("gifted-baileys");
+} = require("@whiskeysockets/baileys");
 
 const {
     evt,
