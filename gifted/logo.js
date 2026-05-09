@@ -281,22 +281,31 @@ async function createLogoCommand(config) {
       if (!q) {
         await react("❌");
         return reply(
-          `Please provide text for the logo.\n\nUsage: .${config.pattern} <text>\nExample: .${config.pattern} ${pushname || "Gifted Tech"}`,
+          `Please provide text for the logo.\n\nUsage: .${config.pattern} <text>\nExample: .${config.pattern} ${pushname || "AASHIF XEON"}`,
         );
       }
 
       try {
         await react("⏳");
 
+        if (!GiftedTechApi || !GiftedApiKey) {
+          await react("❌");
+          return reply("Logo API is not configured. Please set GiftedTechApi and GiftedApiKey.");
+        }
+
         const apiUrl = `${GiftedTechApi}/api/ephoto360/${config.endpoint}?apikey=${GiftedApiKey}&text=${encodeURIComponent(q)}`;
         const res = await axios.get(apiUrl, { timeout: 60000 });
 
-        if (!res.data || !res.data.success || !res.data.result?.image_url) {
-          await react("❌");
-          return reply("Failed to generate logo. Please try again.");
-        }
+        const imageUrl =
+          res.data?.result?.image_url ||
+          res.data?.result?.image ||
+          res.data?.result?.url ||
+          res.data?.result;
 
-        const imageUrl = res.data.result.image_url;
+        if (!res.data?.success || typeof imageUrl !== "string" || !imageUrl) {
+          await react("❌");
+          return reply("Failed to generate logo. API returned an invalid response.");
+        }
         const imageBuffer = await gmdBuffer(imageUrl);
 
         if (!imageBuffer || !Buffer.isBuffer(imageBuffer)) {
@@ -341,7 +350,7 @@ gmd(
       .join("\n");
 
     await reply(
-      `🎨 *${botName} LOGO MAKER*\n\n${logoList}\n\n📝 *Usage:* ${botPrefix}commandname <your text>\n📌 *Example:* ${botPrefix}glossysilver Gifted Tech\n\n> ${botCaption}`,
+      `🎨 *${botName} LOGO MAKER*\n\n${logoList}\n\n📝 *Usage:* ${botPrefix}commandname <your text>\n📌 *Example:* ${botPrefix}glossysilver AASHIF XEON\n\n> ${botCaption}`,
     );
     await react("✅");
   },
