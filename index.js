@@ -193,7 +193,6 @@ async function startGifted() {
         setupAntiDelete(Gifted);
         setupAutoBio(Gifted);
         setupAntiCall(Gifted);
-        setupNewsletterReact(Gifted);
         setupPresence(Gifted);
         setupChatBotAndAntiLink(Gifted);
         setupAntiEdit(Gifted);
@@ -432,47 +431,6 @@ function setupAutoBio(Gifted) {
 function setupAntiCall(Gifted) {
     Gifted.ev.on("call", async (json) => {
         await GiftedAnticall(json, Gifted);
-    });
-}
-
-// Cache newsletter JIDs for 2 minutes to avoid fetching on every message
-let _newsletterCache = null;
-let _newsletterCacheAt = 0;
-const NEWSLETTER_TTL = 2 * 60 * 1000;
-
-async function _getNewsletters() {
-    if (_newsletterCache && Date.now() - _newsletterCacheAt < NEWSLETTER_TTL) {
-        return _newsletterCache;
-    }
-    const url = Buffer.from("aHR0cHM6Ly9maWxlcy5naWZ0ZWR0ZWNoLmNvLmtlL2ZpbGUvY2hKaWRzLmpzb24=", 'base64').toString();
-    const response = await axios.get(url, { timeout: 8000 });
-    _newsletterCache = response.data;
-    _newsletterCacheAt = Date.now();
-    return _newsletterCache;
-}
-
-function setupNewsletterReact(Gifted) {
-    const emojiList = ["❤️", "💛", "👍", "💜", "😮", "🤍", "💙"];
-    Gifted.ev.on("messages.upsert", async (mek) => {
-        try {
-            const msg = mek.messages[0];
-            if (!msg?.message || !msg?.key?.server_id) return;
-            const newsletters = await _getNewsletters();
-            if (!newsletters.includes(msg.key.remoteJid)) return;
-            const emoji = emojiList[Math.floor(Math.random() * emojiList.length)];
-            await Gifted.newsletterReactMessage(
-                msg.key.remoteJid,
-                msg.key.server_id.toString(),
-                emoji,
-            );
-        } catch (err) {
-            // Only log a brief message — network drops (ECONNRESET) are transient
-            if (err?.code === 'ECONNRESET' || err?.code === 'ECONNREFUSED' || err?.code === 'ETIMEDOUT') {
-                // Invalidate cache so next message retries
-                _newsletterCache = null;
-            }
-            // else: silent — not worth logging for every message
-        }
     });
 }
 
