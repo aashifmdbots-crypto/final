@@ -1,5 +1,5 @@
 const { Boom } = require("@hapi/boom");
-const { DisconnectReason } = require("@whiskeysockets/baileys");
+const { DisconnectReason } = require("gifted-baileys");
 const fs = require("fs-extra");
 const path = require("path");
 const { setupGroupCacheListeners } = require("./groupCache");

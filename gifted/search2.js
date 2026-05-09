@@ -3,7 +3,7 @@ const { gmd } = require("../gift"),
   {
     generateWAMessageContent,
     generateWAMessageFromContent,
-  } = require("@whiskeysockets/baileys"),
+  } = require("gifted-baileys"),
   { sendButtons } = require("gifted-btns");
 
 function extractButtonId(msg) {
