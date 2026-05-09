@@ -12,7 +12,7 @@ const { gmd, gmdSticker } = require("../gift"),
   {
     generateWAMessageContent,
     generateWAMessageFromContent,
-  } = require("@whiskeysockets/baileys"),
+  } = require("gifted-baileys"),
   { sendButtons } = require("gifted-btns"),
   { StickerTypes } = require("wa-sticker-formatter");
 
