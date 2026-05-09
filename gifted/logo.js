@@ -2,6 +2,91 @@ const { gmd, gmdBuffer } = require("../gift");
 const axios = require("axios");
 
 const logoEndpoints = [
+
+  {
+    pattern: "metallic",
+    aliases: ["metal", "metallictext"],
+    description: "3D Metallic text logo",
+    endpoint: "metallic",
+  },
+  {
+    pattern: "ice",
+    aliases: ["icetext"],
+    description: "Ice text logo",
+    endpoint: "ice",
+  },
+  {
+    pattern: "snow",
+    aliases: ["snowtext"],
+    description: "Snow 3D text logo",
+    endpoint: "snow",
+  },
+  {
+    pattern: "impressive",
+    aliases: ["paint3d", "colorpaint"],
+    description: "Impressive colorful text logo",
+    endpoint: "impressive",
+  },
+  {
+    pattern: "matrix",
+    aliases: ["matrixtext"],
+    description: "Matrix text logo",
+    endpoint: "matrix",
+  },
+  {
+    pattern: "light",
+    aliases: ["lighttext", "futuristiclight"],
+    description: "Futuristic light text logo",
+    endpoint: "light",
+  },
+  {
+    pattern: "neon",
+    aliases: ["neontext"],
+    description: "Colorful neon text logo",
+    endpoint: "neon",
+  },
+  {
+    pattern: "devil",
+    aliases: ["devilwings", "neondevil"],
+    description: "Neon devil wings text logo",
+    endpoint: "devil",
+  },
+  {
+    pattern: "purple",
+    aliases: ["purpletext"],
+    description: "Purple text logo",
+    endpoint: "purple",
+  },
+  {
+    pattern: "thunder",
+    aliases: ["thundertext"],
+    description: "Thunder text logo",
+    endpoint: "thunder",
+  },
+  {
+    pattern: "leaves",
+    aliases: ["greenbrush", "leaftext"],
+    description: "Leaves typography text logo",
+    endpoint: "leaves",
+  },
+  {
+    pattern: "arena",
+    aliases: ["aov", "arenaofvalor"],
+    description: "Arena of Valor cover logo",
+    endpoint: "arena",
+  },
+  {
+    pattern: "hacker",
+    aliases: ["anonymous", "hackeravatar"],
+    description: "Anonymous hacker avatar logo",
+    endpoint: "hacker",
+  },
+  {
+    pattern: "fire",
+    aliases: ["flame", "firetext"],
+    description: "Fire text logo",
+    endpoint: "fire",
+  },
   {
     pattern: "glossysilver",
     aliases: ["glossy", "silverlogo"],
