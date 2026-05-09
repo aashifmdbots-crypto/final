@@ -39,6 +39,7 @@ const isExpectedError = (errorMsg) => {
         "item-not-found",
         "not-authorized",
         "gone",
+        "rate-overlimit",
     ];
     return expectedErrors.some((e) => errorMsg?.toLowerCase().includes(e));
 };
