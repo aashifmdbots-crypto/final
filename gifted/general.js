@@ -65,7 +65,7 @@ gmd(
     const elapsed = process.hrtime(startTime);
     const responseTime = Math.floor(elapsed[0] * 1000 + elapsed[1] / 1000000);
 
-    const aliveText = `*AASHIF-MD ALIVE*
+    const aliveText = `*🌙*
 
 ┍─━━──┙ ◆ ┕──━━─┑
 ┃ ❆ *Support Group: https://chat.whatsapp.com/Bq3LjmGS3pQ7bYd8s04kbv*
