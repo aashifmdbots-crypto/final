@@ -82,7 +82,11 @@ gmd(
     await Gifted.sendMessage(from, {
       video: { url: "https://files.catbox.moe/bpgdgy.mp4" },
       mimetype: "video/mp4",
-      caption: aliveText,
+    });
+
+    await sendButtons(Gifted, from, {
+      title: "AASHIF-MD ALIVE",
+      text: aliveText,
       footer: `> *${botFooter}*`,
       buttons: [
         { id: `${botPrefix}uptime`, text: "⏱️ Uptime of 𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗" },
@@ -94,6 +98,12 @@ gmd(
           }),
         },
       ],
+    });
+
+    await Gifted.sendMessage(from, {
+      video: { url: "https://files.catbox.moe/bpgdgy.mp4" },
+      mimetype: "video/mp4",
+      ptv: true,
     });
 
     await react("✅");
