@@ -79,9 +79,11 @@ gmd(
 
 ❤️‍🔥 *PING* : ${responseTime}ms`;
 
+
     await Gifted.sendMessage(from, {
       video: { url: "https://files.catbox.moe/bpgdgy.mp4" },
       mimetype: "video/mp4",
+      ptv: true,
     });
 
     await sendButtons(Gifted, from, {
@@ -100,11 +102,6 @@ gmd(
       ],
     });
 
-    await Gifted.sendMessage(from, {
-      video: { url: "https://files.catbox.moe/bpgdgy.mp4" },
-      mimetype: "video/mp4",
-      ptv: true,
-    });
 
     await react("✅");
   },
