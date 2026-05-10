@@ -44,6 +44,62 @@ const formatCommandList = (commandList, botPrefix) =>
   );
 });
 
+
+
+gmd(
+  {
+    pattern: "alive",
+    aliases: ["online", "status"],
+    react: "❤️‍🔥",
+    category: "general",
+    description: "Check whether bot is alive",
+  },
+  async (from, Gifted, conText) => {
+    const { react, botPrefix, botFooter, newsletterUrl } = conText;
+    const startTime = process.hrtime();
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.floor(80 + Math.random() * 420)),
+    );
+
+    const elapsed = process.hrtime(startTime);
+    const responseTime = Math.floor(elapsed[0] * 1000 + elapsed[1] / 1000000);
+
+    const aliveText = `*AASHIF-MD ALIVE*
+
+┍─━━──┙ ◆ ┕──━━─┑
+┃ ❆ *Support Group: https://chat.whatsapp.com/Bq3LjmGS3pQ7bYd8s04kbv*
+┃ ❆ *Support Channel: https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14*
+┃ ❆ *Mood        : ︻╦デ╤━╼*
+ *Owner Contact*
+┃ ❆ *+94768655794*
+┃  ❆ *+94751413121*
+╚─━━━━░ ★ ░━━━━─╝
+> © *AASHIF XEON❤️‍🔥*
+
+❤️‍🔥 *PING* : ${responseTime}ms`;
+
+    await Gifted.sendMessage(from, {
+      video: { url: "https://files.catbox.moe/bpgdgy.mp4" },
+      mimetype: "video/mp4",
+      caption: aliveText,
+      footer: `> *${botFooter}*`,
+      buttons: [
+        { id: `${botPrefix}uptime`, text: "⏱️ Uptime of 𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗" },
+        {
+          name: "cta_url",
+          buttonParamsJson: JSON.stringify({
+            display_text: "WaChannel",
+            url: newsletterUrl,
+          }),
+        },
+      ],
+    });
+
+    await react("✅");
+  },
+);
+
 gmd(
   {
     pattern: "ping",
