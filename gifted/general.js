@@ -39,7 +39,7 @@ const formatCommandList = (commandList, botPrefix) =>
     async (_from, _Gifted, conText) => {
       const { reply } = conText;
 
-      return reply(`.${commandName} is coming soong! ♥️\n\nFollow for more updates: \nhttps://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14\n\n╰─━─ • 🌙 • ─━─╯`);
+      return reply(`.${commandName} is coming soon! ♥️\n\nFollow for more updates: \nhttps://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14\n\n╰─━─ • 🌙 • ─━─╯`);
     },
   );
 });
