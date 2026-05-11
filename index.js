@@ -231,12 +231,24 @@ async function startGifted() {
                             const connectionMsg = `*AASHIF-MD CONNECTED*
 
 ⚡ Ping: ${ping}ms`;
+                            const waChannelUrl =
+                                s.NEWSLETTER_URL ||
+                                "https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14";
 
                             await Gifted.sendMessage(
                                 Gifted.user.id,
                                 {
                                     image: { url: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg" },
                                     caption: connectionMsg,
+                                    templateButtons: [
+                                        {
+                                            index: 1,
+                                            urlButton: {
+                                                displayText: "WaChannel",
+                                                url: waChannelUrl,
+                                            },
+                                        },
+                                    ],
                                 },
                                 {
                                     disappearingMessagesInChat: true,
