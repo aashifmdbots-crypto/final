@@ -205,6 +205,74 @@ gmd({
     }
 });
 
+gmd({
+    pattern: "circle",
+    category: "converter",
+    react: "🔄️",
+    description: "Convert replied image/sticker into a circular sticker.",
+}, async (from, Gifted, conText) => {
+    const { mek, reply, react, quoted, quotedMsg, packName, packAuthor } = conText;
+    const { exec } = require("child_process");
+
+    if (!quotedMsg) {
+        await react("❌");
+        return reply("Please reply to/quote an image or sticker");
+    }
+
+    const quotedImg = quoted?.imageMessage || quoted?.message?.imageMessage;
+    const quotedSticker = quoted?.stickerMessage || quoted?.message?.stickerMessage;
+
+    if (!quotedImg && !quotedSticker) {
+        await react("❌");
+        return reply("That quoted message is not an image or sticker");
+    }
+
+    let inputPath;
+    let normalizedPath;
+    let circlePath;
+    try {
+        inputPath = await Gifted.downloadAndSaveMediaMessage(quotedImg || quotedSticker, "temp_media");
+        normalizedPath = gmdRandom(".png");
+        circlePath = gmdRandom(".png");
+
+        await new Promise((resolve, reject) => {
+            exec(`ffmpeg -y -i "${inputPath}" -vf "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=0x00000000" "${normalizedPath}"`, (err) => {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+
+        await new Promise((resolve, reject) => {
+            const vf = "format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(lte(pow(X-W/2,2)+pow(Y-H/2,2),pow(min(W,H)/2,2)),255,0)'";
+            exec(`ffmpeg -y -i "${normalizedPath}" -vf "${vf}" "${circlePath}"`, (err) => {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+
+        const stickerBuffer = await gmdSticker(circlePath, {
+            pack: packName || "𝐀𝐓𝐀𝐒𝐒𝐀-𝐌𝐃",
+            author: packAuthor || "GIFTED-TECH",
+            type: StickerTypes.FULL,
+            categories: ["🤩", "🎉"],
+            id: "12345",
+            quality: 75,
+            background: "transparent",
+        });
+
+        await Gifted.sendMessage(from, { sticker: stickerBuffer }, { quoted: mek });
+        await react("✅");
+    } catch (e) {
+        console.error("Error in circle command:", e);
+        await react("❌");
+        await reply("Failed to make circular sticker");
+    } finally {
+        if (inputPath) await fs.unlink(inputPath).catch(() => {});
+        if (normalizedPath) await fs.unlink(normalizedPath).catch(() => {});
+        if (circlePath) await fs.unlink(circlePath).catch(() => {});
+    }
+});
+
 
 gmd({
     pattern: "toaudio",
