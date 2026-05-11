@@ -438,10 +438,20 @@ gmd({
 }, async (from, Gifted, conText) => {
     const { mek, reply, react, quoted, quotedMsg } = conText;
 
-    const quotedDoc = quoted?.documentMessage || quoted?.message?.documentMessage;
-    const mime = quotedDoc?.mimetype || "";
+    const quotedDoc =
+        quoted?.documentMessage ||
+        quoted?.message?.documentMessage ||
+        quotedMsg?.documentMessage ||
+        quotedMsg?.documentWithCaptionMessage?.message?.documentMessage;
 
-    if (!quotedMsg || !quotedDoc || !mime.includes("zip")) {
+    const mime = (quotedDoc?.mimetype || "").toLowerCase();
+    const fileName = (quotedDoc?.fileName || "").toLowerCase();
+    const isZip =
+        mime.includes("zip") ||
+        mime.includes("compressed") ||
+        fileName.endsWith(".zip");
+
+    if (!quotedMsg || !quotedDoc || !isZip) {
         await react("❌");
         return reply("Please reply to a ZIP document.");
     }
