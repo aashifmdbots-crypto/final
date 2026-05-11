@@ -42,6 +42,40 @@ function isSettingEnabled(val) {
 
 gmd(
   {
+    pattern: "autochat",
+    aliases: ["setautochat"],
+    react: "⚙️",
+    category: "owner",
+    description: "Toggle autochat for private messages (on/off)",
+  },
+  async (from, Gifted, conText) => {
+    const { q, reply, react, isSuperUser } = conText;
+    if (!isSuperUser) return reply("❌ Owner Only Command!");
+    const valid = ["true", "false"];
+    const value = parseBooleanInput(q);
+    if (!value || !valid.includes(value)) {
+      return reply("❌ Please specify: autochat on/off");
+    }
+    try {
+      const current = await getSetting("AUTOCHAT");
+      if (current === value) {
+        return reply(
+          `⚠️ AUTOCHAT is already *${formatBoolDisplay(value)}*`,
+        );
+      }
+      await setSetting("AUTOCHAT", value);
+      await react("✅");
+      await reply(
+        value === "true" ? "AUTOCHAT TURNED ON" : "AUTOCHAT TURNED OFF",
+      );
+    } catch (error) {
+      await reply(`❌ Error: ${error.message}`);
+    }
+  },
+);
+
+gmd(
+  {
     pattern: "setautolikestatus",
     aliases: ["autolikestatus", "autostatuslike", "statuslike", "autolike", "likestatus"],
     react: "⚙️",
