@@ -3,6 +3,7 @@ const AdmZip = require("adm-zip");
 const path = require("path");
 const fs = require("fs").promises;
 const { StickerTypes } = require("wa-sticker-formatter");
+const sharp = require("sharp");
 
 gmd({
     pattern: "sticker",
@@ -125,7 +126,6 @@ gmd({
     }
 
     let tempFilePath;
-    let sourceBuffer;
     let circleFilePath;
 
     try {
@@ -134,9 +134,7 @@ gmd({
             "temp_media"
         );
 
-        sourceBuffer = await fs.readFile(tempFilePath);
-        const sharp = require("sharp");
-
+        const sourceBuffer = await fs.readFile(tempFilePath);
         const imageInput = quotedSticker ? await stickerToImage(sourceBuffer) : sourceBuffer;
 
         const metadata = await sharp(imageInput).metadata();
