@@ -8,7 +8,8 @@ const {
     GIFTED_DLS = require("gifted-dls"),
     giftedDls = new GIFTED_DLS(),
     axios = require("axios"),
-    { sendButtons } = require("gifted-btns");
+    { sendButtons } = require("gifted-btns"),
+    { getSetting } = require("../gift/database/settings");
 
 function extractButtonId(msg) {
     if (!msg) return null;
@@ -93,7 +94,10 @@ gmd(
                 (nameFromUrl && nameFromUrl.replace(/[^\w\s.-]/g, "_")) ||
                 "downloaded_file";
 
-            const caption = `*File:* ${fileName}\n*Size:* ${fileSize ? (fileSize / (1024 * 1024)).toFixed(2) + " MB" : "Unknown"}`;
+            const uploadCaption =
+                (await getSetting("UPLOAD_CAPTION")) ||
+                "⸙ —͞𝐀𝐀𝐒𝐇𝐈𝐅 〽️ 𝐎 𝐕 𝐈 𝐄 ᥫ᭡";
+            const caption = `${uploadCaption}\n\n*File:* ${fileName}\n*Size:* ${fileSize ? (fileSize / (1024 * 1024)).toFixed(2) + " MB" : "Unknown"}`;
 
             if (mimeCategory === "audio" && !sendAsDoc) {
                 await Gifted.sendMessage(
