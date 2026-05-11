@@ -614,6 +614,155 @@ gmd(
 
 gmd(
   {
+    pattern: "szsearch",
+    aliases: ["subzlk", "subzsearch"],
+    category: "search",
+    react: "🎬",
+    description: "Search Subzlk subtitles and return rich cards",
+  },
+  async (from, Gifted, conText) => {
+    const { q, mek, reply, react, botFooter } = conText;
+
+    if (!q) {
+      await react("❌");
+      return reply("Please provide a movie/series name");
+    }
+
+    const checkDownloadable = async (url) => {
+      try {
+        const directFilePattern =
+          /\.(mp4|mkv|avi|mov|webm|zip|rar|7z|srt|ass|vtt|txt|torrent)(\?|#|$)/i;
+        if (directFilePattern.test(url)) return true;
+
+        const res = await axios.head(url, {
+          timeout: 12000,
+          maxRedirects: 5,
+          validateStatus: () => true,
+        });
+        const contentType = String(res.headers?.["content-type"] || "").toLowerCase();
+        const disposition = String(res.headers?.["content-disposition"] || "").toLowerCase();
+
+        return (
+          disposition.includes("attachment") ||
+          /(video|audio|application\/octet-stream|application\/zip|application\/x-rar|application\/x-bittorrent|text\/plain|text\/vtt|application\/x-subrip)/i.test(
+            contentType,
+          )
+        );
+      } catch {
+        return false;
+      }
+    };
+
+    try {
+      const apiUrl = `https://apis.laksidunimsara.com/subzlk/search?query=${encodeURIComponent(q)}&api_key=lakiya_d0967c3020f34e09993b83ceb9bc3252498b125e37ed9c02beb2dbbb950651e1`;
+      const res = await axios.get(apiUrl, { timeout: 60000 });
+      const apiData = res.data?.data;
+      const results = apiData?.results;
+
+      if (!res.data?.status || !Array.isArray(results) || results.length === 0) {
+        await react("❌");
+        return reply("No Subzlk results found. Try another query.");
+      }
+
+      const top = results.slice(0, 5);
+      const cards = await Promise.all(
+        top.map(async (item) => {
+          const isDownloadable = item?.url ? await checkDownloadable(item.url) : false;
+          const buttons = [
+            {
+              name: "cta_url",
+              buttonParamsJson: JSON.stringify({
+                display_text: "Open Result",
+                url: item.url,
+              }),
+            },
+            {
+              name: "cta_copy",
+              buttonParamsJson: JSON.stringify({
+                display_text: "Copy Link",
+                copy_code: item.url,
+              }),
+            },
+          ];
+
+          if (isDownloadable) {
+            buttons.push({
+              name: "cta_url",
+              buttonParamsJson: JSON.stringify({
+                display_text: "Download",
+                url: item.url,
+              }),
+            });
+          }
+
+          return {
+            header: {
+              title: `🎞️ *${item.title || "Untitled"}*`,
+              hasMediaAttachment: true,
+              imageMessage: (
+                await generateWAMessageContent(
+                  {
+                    image: {
+                      url:
+                        item.thumbnail ||
+                        "https://files.giftedtech.co.ke/image/ZAwgoogle-images-1548419288.jpg",
+                    },
+                  },
+                  { upload: Gifted.waUploadToServer },
+                )
+              ).imageMessage,
+            },
+            body: {
+              text: `⭐ Rating: ${item.rating || "N/A"} | 📅 ${item.year || "N/A"}\n🎬 Type: ${item.type || "N/A"}\n🌐 Language: ${item.language || "N/A"}\n📦 Source: ${item.source || "Subzlk"}`,
+            },
+            footer: {
+              text: isDownloadable
+                ? `⬇️ Direct download detected • > *${botFooter}*`
+                : `🔗 Stream/Page link • > *${botFooter}*`,
+            },
+            nativeFlowMessage: { buttons },
+          };
+        }),
+      );
+
+      const message = generateWAMessageFromContent(
+        from,
+        {
+          viewOnceMessage: {
+            message: {
+              messageContextInfo: {
+                deviceListMetadata: {},
+                deviceListMetadataVersion: 2,
+              },
+              interactiveMessage: {
+                body: {
+                  text: `🎬 Subzlk Results for: *${apiData?.query || q}*`,
+                },
+                footer: {
+                  text: `📂 Total: *${apiData?.total_results || results.length}* | Showing: *${top.length}*`,
+                },
+                carouselMessage: { cards },
+              },
+            },
+          },
+        },
+        { quoted: mek },
+      );
+
+      await Gifted.relayMessage(from, message.message, {
+        messageId: message.key.id,
+      });
+      await react("✅");
+    } catch (error) {
+      console.error("Subzlk search error:", error);
+      await react("❌");
+      return reply("Failed to search Subzlk. Please try again.");
+    }
+  },
+);
+
+gmd(
+  {
     pattern: "stickersearch",
     aliases: ["searchsticker", "findsticker"],
     category: "search",
