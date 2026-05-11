@@ -1,4 +1,4 @@
-const { gmd, getExtensionFromMime, isTextContent } = require("../gift");
+const { gmd, gmdSticker, getExtensionFromMime, isTextContent } = require("../gift");
 const axios = require("axios");
 const fs = require("fs").promises;
 const { sendButtons } = require("gifted-btns");
@@ -44,7 +44,12 @@ gmd(
         from,
         {
           image: Buffer.from(res.data),
-          caption: `*${botName} SCREENSHOT*\n\n🌐 ${url}\n📱 Mobile View\n\n> *${botFooter}*`,
+          caption: `*${botName} SCREENSHOT*
+
+🌐 ${url}
+📱 Mobile View
+
+> *${botFooter}*`,
         },
         { quoted: mek },
       );
@@ -640,11 +645,15 @@ gmd(
         responseType: "arraybuffer",
       });
 
+      const stickerBuffer = await gmdSticker(Buffer.from(res.data), {
+        packname: "AASHIF-MD",
+        author: "AASHIF XEON ♥️🌙",
+      });
+
       await Gifted.sendMessage(
         from,
         {
-          image: Buffer.from(res.data),
-          caption: `*${botName} EMOJI MIX*\n\n${emoji1} + ${emoji2}\n\n> *${botFooter}*`,
+          sticker: stickerBuffer,
         },
         { quoted: mek },
       );
