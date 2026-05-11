@@ -293,6 +293,36 @@ gmd(
 
 gmd(
   {
+    pattern: "setuploadcaption",
+    aliases: ["uploadcaption", "setdlcaption"],
+    react: "⚙️",
+    category: "owner",
+    description: "Set download/upload file caption",
+  },
+  async (from, Gifted, conText) => {
+    const { q, reply, react, isSuperUser } = conText;
+    if (!isSuperUser) return reply("❌ Owner Only Command!");
+    if (!q)
+      return reply(
+        "❌ Please provide a caption!\n\nExample: .setuploadcaption Your custom caption",
+      );
+    try {
+      const current = await getSetting("UPLOAD_CAPTION");
+      if (current === q.trim()) {
+        return reply(`⚠️ Upload caption is already set to: *${q.trim()}*`);
+      }
+      await setSetting("UPLOAD_CAPTION", q.trim());
+      await react("✅");
+      await reply(`✅ Upload caption set to: *${q.trim()}*`);
+    } catch (error) {
+      await reply(`❌ Error: ${error.message}`);
+    }
+  },
+);
+
+
+gmd(
+  {
     pattern: "setbotpic",
     aliases: ["botpic", "botimage", "setbotimage"],
     react: "⚙️",

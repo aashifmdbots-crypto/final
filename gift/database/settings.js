@@ -36,6 +36,7 @@ const DEFAULT_SETTINGS = {
     BOT_NAME: "𝗔𝗔𝗦𝗛𝗜𝗙-𝗠𝗗",
     FOOTER: "Aashif Xeon ❤️‍🔥",
     CAPTION: "🌎 *Aashif Xeon ❤️‍🔥",
+    UPLOAD_CAPTION: "⸙ —͞𝐀𝐀𝐒𝐇𝐈𝐅 〽️ 𝐎 𝐕 𝐈 𝐄 ᥫ᭡",
     BOT_PIC: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg",
     VERSION: packageJson.version || "5.0.0",
     MODE: config.MODE || "public",
