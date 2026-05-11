@@ -226,11 +226,10 @@ async function startGifted() {
                     try {                        console.log("💜 Connected to Whatsapp, Active!");
 
                         if (s.STARTING_MESSAGE === "true") {
-                            const pingStart = Date.now();
-                            const ping = Date.now() - pingStart;
                             const connectionMsg = `*AASHIF-MD CONNECTED*
+⚡ Ping: [bot response speed/ping]
 
-⚡ Ping: ${ping}ms`;
+Wa-channel link: https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14`;
                             const waChannelUrl =
                                 s.NEWSLETTER_URL ||
                                 "https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14";
