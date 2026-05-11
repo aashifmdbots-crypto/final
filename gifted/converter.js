@@ -581,19 +581,54 @@ gmd({
         const zip = new AdmZip(zipPath);
         const entries = zip.getEntries().filter((e) => !e.isDirectory);
 
-        if (!entries.length) return reply("ZIP file is empty.");
+        if (!entries.length) {
+            await react("⚠️");
+            return reply("ZIP file is empty.");
+        }
 
-        for (const entry of entries.slice(0, 10)) {
+        const imageExt = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp"]);
+        const videoExt = new Set([".mp4", ".mov", ".mkv", ".webm", ".avi"]);
+        const audioExt = new Set([".mp3", ".wav", ".ogg", ".m4a", ".aac", ".flac"]);
+
+        for (const entry of entries) {
             const data = entry.getData();
+            const safeName = path.basename(entry.entryName) || "file";
+            const ext = path.extname(safeName).toLowerCase();
+
+            if (imageExt.has(ext)) {
+                await Gifted.sendMessage(from, {
+                    image: data,
+                    caption: safeName,
+                }, { quoted: mek });
+                continue;
+            }
+
+            if (videoExt.has(ext)) {
+                await Gifted.sendMessage(from, {
+                    video: data,
+                    caption: safeName,
+                    fileName: safeName,
+                }, { quoted: mek });
+                continue;
+            }
+
+            if (audioExt.has(ext)) {
+                await Gifted.sendMessage(from, {
+                    audio: data,
+                    mimetype: quotedDoc.mimetype || "audio/mpeg",
+                    fileName: safeName,
+                    ptt: false,
+                }, { quoted: mek });
+                continue;
+            }
+
             await Gifted.sendMessage(from, {
                 document: data,
-                fileName: path.basename(entry.entryName),
+                fileName: safeName,
             }, { quoted: mek });
         }
 
-        if (entries.length > 10) {
-            await reply(`Extracted first 10 files out of ${entries.length}.`);
-        }
+        await reply(`✅ Extracted and sent ${entries.length} file(s) from ZIP.`);
         await react("✅");
     } catch (e) {
         console.error("Error in extract command:", e);
