@@ -473,6 +473,40 @@ function setupChatBotAndAntiLink(Gifted) {
             const from = message.key?.remoteJid || "";
             if (message.key.fromMe && !from.endsWith("@g.us")) continue;
 
+            if (
+                !message.key.fromMe &&
+                from.endsWith("@s.whatsapp.net") &&
+                !from.endsWith("@g.us") &&
+                !from.endsWith("@broadcast") &&
+                firstMsg?.message
+            ) {
+                try {
+                    const s = await getAllSettings();
+                    if (s.AUTOCHAT === "true") {
+                        const messageText =
+                            message.message?.conversation ||
+                            message.message?.extendedTextMessage?.text ||
+                            message.message?.imageMessage?.caption ||
+                            message.message?.videoMessage?.caption ||
+                            "";
+
+                        if (messageText.trim()) {
+                            const apiUrl = `https://apis.davidcyril.name.ng/ai/gemini?text=${encodeURIComponent(messageText)}`;
+                            const { data } = await axios.get(apiUrl, { timeout: 30000 });
+                            const aiReply = data?.message;
+
+                            if (aiReply && typeof aiReply === "string") {
+                                await Gifted.sendMessage(from, {
+                                    text: `🤖 AI\n${aiReply}`,
+                                });
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error("AUTOCHAT error:", error?.message || error);
+                }
+            }
+
             if (from.endsWith("@g.us")) {
                 await GiftedAntiLink(Gifted, message, getGroupMetadata);
                 await GiftedAntibad(Gifted, message, getGroupMetadata);
