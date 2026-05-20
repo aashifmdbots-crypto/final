@@ -598,33 +598,60 @@ ${categorySections}
 ✧･ﾟ: *Aashif Xeon* ･ﾟ✧
       💗 Made with love 💗`;
 
-      await Gifted.sendMessage(
-        from,
-        {
-          video: { url: "https://files.catbox.moe/t5lq5x.mp4" },
-          mimetype: "video/mp4",
-          ptv: true,
-        },
-        { quoted: mek },
-      );
+      try {
+        await Gifted.sendMessage(
+          from,
+          {
+            video: { url: "https://files.catbox.moe/t5lq5x.mp4" },
+            mimetype: "video/mp4",
+            ptv: true,
+          },
+          { quoted: mek },
+        );
+      } catch (err) {
+        console.warn(
+          "Menu intro video unavailable:",
+          err?.response?.status || err?.message || err,
+        );
+      }
 
       const giftedMess = {
         image: { url: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg" },
         caption: `${menu.trim()}\n\n> *${botFooter}*`,
       };
-      await Gifted.sendMessage(from, giftedMess, { quoted: mek });
+      try {
+        await Gifted.sendMessage(from, giftedMess, { quoted: mek });
+      } catch (err) {
+        const statusCode = err?.response?.status;
+        const isNotFound = statusCode === 404 || err?.message?.includes("404");
+        console.warn("Menu image unavailable:", statusCode || err?.message || err);
+        if (!isNotFound) throw err;
 
-      await Gifted.sendMessage(
-        from,
-        {
-          audio: {
-            url: "https://www.image2url.com/r2/default/audio/1777371472047-7ffb2e9d-598d-4907-97fa-e4bc6a60876a.mp3",
+        await Gifted.sendMessage(
+          from,
+          { text: `${menu.trim()}\n\n> *${botFooter}*` },
+          { quoted: mek },
+        );
+      }
+
+      try {
+        await Gifted.sendMessage(
+          from,
+          {
+            audio: {
+              url: "https://www.image2url.com/r2/default/audio/1777371472047-7ffb2e9d-598d-4907-97fa-e4bc6a60876a.mp3",
+            },
+            mimetype: "audio/mpeg",
+            ptt: false,
           },
-          mimetype: "audio/mpeg",
-          ptt: false,
-        },
-        { quoted: mek },
-      );
+          { quoted: mek },
+        );
+      } catch (err) {
+        console.warn(
+          "Menu audio unavailable:",
+          err?.response?.status || err?.message || err,
+        );
+      }
 
       await react("✅");
     } catch (e) {
