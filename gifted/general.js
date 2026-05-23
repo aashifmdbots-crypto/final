@@ -615,21 +615,38 @@ ${categorySections}
         );
       }
 
-      const giftedMess = {
-        image: { url: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg" },
-        caption: `${menu.trim()}\n\n> *${botFooter}*`,
-      };
-      try {
-        await Gifted.sendMessage(from, giftedMess, { quoted: mek });
-      } catch (err) {
-        const statusCode = err?.response?.status;
-        const isNotFound = statusCode === 404 || err?.message?.includes("404");
-        console.warn("Menu image unavailable:", statusCode || err?.message || err);
-        if (!isNotFound) throw err;
+      const menuCaption = `${menu.trim()}\n\n> *${botFooter}*`;
+      const menuImageSources = [
+        "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg",
+        botPic,
+      ].filter(Boolean);
 
+      let menuImageSent = false;
+      for (const imageUrl of menuImageSources) {
+        try {
+          await Gifted.sendMessage(
+            from,
+            {
+              image: { url: imageUrl },
+              caption: menuCaption,
+            },
+            { quoted: mek },
+          );
+          menuImageSent = true;
+          break;
+        } catch (err) {
+          console.warn(
+            "Menu image unavailable:",
+            imageUrl,
+            err?.response?.status || err?.message || err,
+          );
+        }
+      }
+
+      if (!menuImageSent) {
         await Gifted.sendMessage(
           from,
-          { text: `${menu.trim()}\n\n> *${botFooter}*` },
+          { text: menuCaption },
           { quoted: mek },
         );
       }
