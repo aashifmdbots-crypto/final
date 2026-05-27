@@ -451,6 +451,72 @@ gmd({
 
 
 
+
+
+gmd({
+    pattern: "fptv",
+    category: "owner",
+    react: "📨",
+    description: "Forward replied video as PTV to provided chat JID (owner only)",
+  },
+  async (from, Gifted, conText) => {
+    const { q, mek, reply, react, quoted, quotedMsg, isSuperUser } = conText;
+
+    if (!isSuperUser) return reply("❌ Owner Only Command!");
+
+    if (!q) {
+      await react("❌");
+      return reply("Please provide a target chat JID.\nExample: .fptv 1203630xxxx@g.us");
+    }
+
+    if (!quotedMsg) {
+      await react("❌");
+      return reply("Please reply to a video message");
+    }
+
+    const quotedVideo = quoted?.videoMessage || quoted?.message?.videoMessage;
+
+    if (!quotedVideo) {
+      await react("❌");
+      return reply("The quoted message doesn't contain any video");
+    }
+
+    let targetJid = q.trim().split(/\s+/)[0];
+    if (/^\d+$/.test(targetJid)) {
+      targetJid = targetJid.includes('-') ? `${targetJid}@g.us` : `${targetJid}@s.whatsapp.net`;
+    }
+
+    if (!/@(g\.us|s\.whatsapp\.net)$/.test(targetJid)) {
+      await react("❌");
+      return reply("Invalid JID format. Use full JID like 1203630xxxx@g.us or 947xxxxxxx@s.whatsapp.net");
+    }
+
+    let tempFilePath;
+    try {
+      tempFilePath = await Gifted.downloadAndSaveMediaMessage(quotedVideo, "temp_media");
+      const videoBuffer = await fs.readFile(tempFilePath);
+
+      await Gifted.sendMessage(
+        targetJid,
+        {
+          video: videoBuffer,
+          mimetype: "video/mp4",
+          ptv: true,
+        },
+        { quoted: mek },
+      );
+
+      await react("✅");
+      await reply(`✅ Video sent as PTV to: ${targetJid}`);
+    } catch (e) {
+      console.error("Error in fptv command:", e);
+      await react("❌");
+      await reply("Failed to forward video as PTV");
+    } finally {
+      if (tempFilePath) await fs.unlink(tempFilePath).catch(console.error);
+    }
+  }
+);
 gmd({
     pattern: "ptv",
     category: "owner",
