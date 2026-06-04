@@ -22,6 +22,22 @@ const getCategoryCommands = (categoryName) =>
 const formatCommandList = (commandList, botPrefix) =>
   commandList.map((command) => `│ ◇ ${botPrefix}${command.pattern}`).join("\n");
 
+
+gmd(
+  {
+    pattern: /^\s*prefix\s*$/i,
+    on: "body",
+    react: "ℹ️",
+    category: "general",
+    dontAddCommandList: true,
+    description: "Show the current bot prefix without using a prefix",
+  },
+  async (_from, _Gifted, conText) => {
+    const { botPrefix, reply } = conText;
+    return reply(`Your prefix is [${monospace(botPrefix)}]`);
+  },
+);
+
 [
   "cinesubz",
   "mvda",
