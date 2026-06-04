@@ -227,13 +227,24 @@ async function startGifted() {
 
                         if (s.STARTING_MESSAGE === "true") {
                             const pingMs = Math.floor(Math.random() * 101) + 150;
-                            const connectionMsg = `*AASHIF-MD CONNECTED*
+                            const channelJid = "120363423387851999@newsletter";
+                            const connectedImage =
+                                s.BOT_PIC ||
+                                "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg";
+                            const connectionMsg = `╭━━━〔 ⚡ CONNECTED ⚡ 〕━━━⬣
+┃ ✨ Status : Connected Successfully
+┃ 🤖 Bot : AASHIF XEON ❤️‍🔥
+┃ 📡 Prefix : ${s.PREFIX || "."}
+┃ 👑 Owner : 94768655794
+┃ 👑 Owner : 94751413121
+┃ ⚡ Speed : ${pingMs} ms
+┃  ❤️‍🔥 Mode: ${s.MODE || "public"}
+╰━━━━━━━━━━━━━━━━━━⬣
 
-⚡ Ping: ${pingMs} MS🌙
-Wa channel link: https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14`;
-                            const waChannelUrl =
-                                s.NEWSLETTER_URL ||
-                                "https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14";
+💥 Welcome To Next Level WhatsApp Automation Bot 💥
+
+> 🔥© Powered By Aashif Xeon❤️‍🔥
+> 😈 By Aashif Tech`;
                             const selfJid = jidNormalizedUser(
                                 Gifted?.user?.id || Gifted?.authState?.creds?.me?.id || "",
                             );
@@ -242,10 +253,19 @@ Wa channel link: https://whatsapp.com/channel/0029VbBuHjx2ER6cVsDRlR14`;
                                 await Gifted.sendMessage(
                                     selfJid,
                                     {
-                                        image: { url: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg" },
-                                        caption: `${connectionMsg}
-
-WaChannel: ${waChannelUrl}`,
+                                        image: { url: connectedImage },
+                                        caption: connectionMsg,
+                                        contextInfo: {
+                                            forwardingScore: 999,
+                                            isForwarded: true,
+                                            forwardedNewsletterMessageInfo: {
+                                                newsletterJid: channelJid,
+                                                newsletterName: "Aashif Tech",
+                                                serverMessageId: Math.floor(
+                                                    100000 + Math.random() * 900000,
+                                                ),
+                                            },
+                                        },
                                     },
                                     {
                                         disappearingMessagesInChat: true,
