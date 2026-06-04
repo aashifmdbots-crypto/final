@@ -1,7 +1,88 @@
 const { gmd, getExtensionFromMime, isTextContent } = require("../gift");
 const axios = require("axios");
+const { translate } = require("@vitalets/google-translate-api");
 const fs = require("fs").promises;
 const { sendButtons } = require("gifted-btns");
+
+const extractQuotedText = (message) => {
+  if (!message) return "";
+
+  const quotedMessage =
+    message.message ||
+    message.ephemeralMessage?.message ||
+    message.viewOnceMessage?.message ||
+    message.viewOnceMessageV2?.message ||
+    message;
+
+  return (
+    quotedMessage.text ||
+    quotedMessage.conversation ||
+    quotedMessage.extendedTextMessage?.text ||
+    quotedMessage.imageMessage?.caption ||
+    quotedMessage.videoMessage?.caption ||
+    quotedMessage.documentMessage?.caption ||
+    quotedMessage.buttonsMessage?.contentText ||
+    quotedMessage.listMessage?.description ||
+    quotedMessage.templateMessage?.hydratedTemplate?.hydratedContentText ||
+    ""
+  );
+};
+
+const isTooManyRequestsError = (error) => {
+  return (
+    error?.name === "TooManyRequestsError" ||
+    error?.status === 429 ||
+    error?.statusCode === 429
+  );
+};
+
+gmd(
+  {
+    pattern: "tr",
+    aliases: ["translate"],
+    react: "🌐",
+    category: "tools",
+    description: "Translate text or a quoted message with Google Translate",
+  },
+  async (from, Gifted, conText) => {
+    const { args, quoted, quotedMsg, reply, botPrefix } = conText;
+    const usage = `Usage: ${botPrefix || "."}tr <lang_code> <text>\nExample: ${botPrefix || "."}tr hi Hello\nOr quote a message and send: ${botPrefix || "."}tr en`;
+
+    const [targetLanguage, ...textParts] = Array.isArray(args) ? args : [];
+    const languageCode = targetLanguage?.trim();
+
+    if (!languageCode) return reply(usage);
+
+    if (!/^[a-zA-Z]{2,3}(?:-[a-zA-Z]{2,4})?$/.test(languageCode)) {
+      return reply("❌ Please provide a valid Google language code, for example: en, hi, ur, fr, es, ar, zh-CN.");
+    }
+
+    const directText = textParts.join(" ").trim();
+    const quotedText = extractQuotedText(quotedMsg) || extractQuotedText(quoted);
+    const textToTranslate = directText || quotedText.trim();
+
+    if (!textToTranslate) return reply(usage);
+
+    try {
+      const result = await translate(textToTranslate, { to: languageCode });
+      const translatedText = result?.text?.trim();
+
+      if (!translatedText) {
+        return reply("❌ I couldn't translate that text. Please try a different message.");
+      }
+
+      return reply(`🌐 *Translation (${languageCode})*\n\n${translatedText}`);
+    } catch (error) {
+      console.error("translate error:", error);
+
+      if (isTooManyRequestsError(error)) {
+        return reply("⚠️ Google Translate is receiving too many requests right now. Please wait a little and try again.");
+      }
+
+      return reply("❌ Translation failed. Please check the language code and try again.");
+    }
+  },
+);
 
 gmd(
   {
