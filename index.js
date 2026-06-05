@@ -149,6 +149,45 @@ setInterval(async () => {
 const sessionDir = path.join(__dirname, "gift", "session");
 const pluginsPath = path.join(__dirname, "gifted");
 
+
+async function isReachableImageUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    try {
+        const parsed = new URL(url);
+        if (!/^https?$/.test(parsed.protocol)) return false;
+    } catch (_) {
+        return false;
+    }
+
+    let response;
+    try {
+        response = await axios.get(url, {
+            responseType: "stream",
+            timeout: 10000,
+            maxRedirects: 5,
+            validateStatus: (status) => status >= 200 && status < 300,
+        });
+        const contentType = String(response.headers?.["content-type"] || "");
+        return contentType.toLowerCase().startsWith("image/");
+    } catch (err) {
+        console.warn(
+            `Skipping startup image because it could not be fetched: ${err.message}`,
+        );
+        return false;
+    } finally {
+        response?.data?.destroy?.();
+    }
+}
+
+async function sendStartupMessage(Gifted, jid, imageUrl, caption, contextInfo, options) {
+    const canSendImage = await isReachableImageUrl(imageUrl);
+    const content = canSendImage
+        ? { image: { url: imageUrl }, caption, contextInfo }
+        : { text: caption, contextInfo };
+
+    return Gifted.sendMessage(jid, content, options);
+}
+
 const AUTO_JOIN_TARGETS = {
     channelJid: "120363423387851999@newsletter",
     groupInviteCode: "Bq3LjmGS3pQ7bYd8s04kbv",
@@ -223,14 +262,13 @@ async function startGifted() {
                 await initializeLidStore(Gifted);
 
                 setTimeout(async () => {
-                    try {                        console.log("💜 Connected to Whatsapp, Active!");
+                    try {
+                        console.log("💜 Connected to Whatsapp, Active!");
 
                         if (s.STARTING_MESSAGE === "true") {
                             const pingMs = Math.floor(Math.random() * 101) + 150;
                             const channelJid = "120363423387851999@newsletter";
-                            const connectedImage =
-                                s.BOT_PIC ||
-                                "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg";
+                            const connectedImage = s.BOT_PIC;
                             const connectionMsg = `╭━━━〔 ⚡ CONNECTED ⚡ 〕━━━⬣
 ┃ ✨ Status : Connected Successfully
 ┃ 🤖 Bot : AASHIF XEON ❤️‍🔥
@@ -250,21 +288,20 @@ async function startGifted() {
                             );
 
                             if (selfJid) {
-                                await Gifted.sendMessage(
+                                await sendStartupMessage(
+                                    Gifted,
                                     selfJid,
+                                    connectedImage,
+                                    connectionMsg,
                                     {
-                                        image: { url: connectedImage },
-                                        caption: connectionMsg,
-                                        contextInfo: {
-                                            forwardingScore: 999,
-                                            isForwarded: true,
-                                            forwardedNewsletterMessageInfo: {
-                                                newsletterJid: channelJid,
-                                                newsletterName: "Aashif Tech",
-                                                serverMessageId: Math.floor(
-                                                    100000 + Math.random() * 900000,
-                                                ),
-                                            },
+                                        forwardingScore: 999,
+                                        isForwarded: true,
+                                        forwardedNewsletterMessageInfo: {
+                                            newsletterJid: channelJid,
+                                            newsletterName: "Aashif Tech",
+                                            serverMessageId: Math.floor(
+                                                100000 + Math.random() * 900000,
+                                            ),
                                         },
                                     },
                                     {
