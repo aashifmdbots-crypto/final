@@ -37,7 +37,7 @@ const DEFAULT_SETTINGS = {
     FOOTER: "Aashif Xeon ❤️‍🔥",
     CAPTION: "🌎 *Aashif Xeon ❤️‍🔥",
     UPLOAD_CAPTION: "⸙ —͞𝐀𝐀𝐒𝐇𝐈𝐅 〽️ 𝐎 𝐕 𝐈 𝐄 ᥫ᭡",
-    BOT_PIC: "https://i.ibb.co/5Xjj5sxz/tourl-1777040577237.jpg",
+    BOT_PIC: "",
     VERSION: packageJson.version || "5.0.0",
     MODE: config.MODE || "public",
     WARN_COUNT: "3",
