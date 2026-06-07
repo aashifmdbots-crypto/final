@@ -268,7 +268,7 @@ async function startGifted() {
                         if (s.STARTING_MESSAGE === "true") {
                             const pingMs = Math.floor(Math.random() * 101) + 150;
                             const channelJid = "120363423387851999@newsletter";
-                            const connectedImage = s.BOT_PIC;
+                            const connectedImage = s.BOT_PIC || DEFAULT_SETTINGS.BOT_PIC;
                             const connectionMsg = `╭━━━〔 ⚡ CONNECTED ⚡ 〕━━━⬣
 ┃ ✨ Status : Connected Successfully
 ┃ 🤖 Bot : AASHIF XEON ❤️‍🔥
