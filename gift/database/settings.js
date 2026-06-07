@@ -37,7 +37,7 @@ const DEFAULT_SETTINGS = {
     FOOTER: "Aashif Xeon ❤️‍🔥",
     CAPTION: "🌎 *Aashif Xeon ❤️‍🔥",
     UPLOAD_CAPTION: "⸙ —͞𝐀𝐀𝐒𝐇𝐈𝐅 〽️ 𝐎 𝐕 𝐈 𝐄 ᥫ᭡",
-    BOT_PIC: "",
+    BOT_PIC: "https://raw.githubusercontent.com/aashifserbot-hub/Xeon-md-picture/bd71033fcb7da9fb373832eb13fbb9ca380dd4f3/IMG-20260520-WA0141.jpg",
     VERSION: packageJson.version || "5.0.0",
     MODE: config.MODE || "public",
     WARN_COUNT: "3",

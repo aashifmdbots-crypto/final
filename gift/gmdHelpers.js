@@ -1,4 +1,4 @@
-const { getSetting } = require("./database/settings");
+const { DEFAULT_SETTINGS, getSetting } = require("./database/settings");
 
 const originalConsoleInfo = console.info;
 const originalConsoleLog = console.log;
@@ -79,7 +79,7 @@ const createContext = async (userJid, options = {}) => {
     const botName = (await getSetting("BOT_NAME")) || "𝐆𝐈𝐅𝐓𝐄𝐃 𝐌𝐃";
     const botPic =
         (await getSetting("BOT_PIC")) ||
-        "https://gitcdn.giftedtech.co.ke/image/AZO_image.jpg";
+        DEFAULT_SETTINGS.BOT_PIC;
     const newsletterJid =
         (await getSetting("NEWSLETTER_JID")) || "120363423387851999@newsletter";
     const newsletterUrl =
@@ -117,7 +117,7 @@ const createContext2 = async (userJid, options = {}) => {
     const botName = (await getSetting("BOT_NAME")) || "𝐆𝐈𝐅𝐓𝐄𝐃 𝐌𝐃";
     const botPic =
         (await getSetting("BOT_PIC")) ||
-        "https://gitcdn.giftedtech.co.ke/image/AZO_image.jpg";
+        DEFAULT_SETTINGS.BOT_PIC;
     const newsletterJid =
         (await getSetting("NEWSLETTER_JID")) || "120363423387851999@newsletter";
 
