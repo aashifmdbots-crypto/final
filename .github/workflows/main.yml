@@ -1,8 +1,10 @@
 name: Run WhatsApp Bot
 
 on:
+  push:
+    branches: [ main ]
   schedule:
-    - cron: '0 */5 * * *' # Har 5 ghante me run Hoga
+    - cron: '0 */5 * * *' # Har 5 ghante me run hoga
   workflow_dispatch:      # Manual start karne ke liye
 
 jobs:
