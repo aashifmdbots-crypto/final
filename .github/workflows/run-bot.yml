@@ -1,0 +1,28 @@
+name: Run WhatsApp Bot
+
+on:
+  schedule:
+    - cron: '0 */5 * * *' # Har 5 ghante me run Hoga
+  workflow_dispatch:      # Manual start karne ke liye
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300  # 5 hours max execution limit per run
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Start Bot
+        env:
+          SESSION_ID: ${{ secrets.SESSION_ID }}
+        run: npm start
